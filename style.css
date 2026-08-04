@@ -19,8 +19,9 @@ body {
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
   color: var(--loreal-black);
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   background: linear-gradient(135deg, #fffaf6 0%, var(--loreal-cream) 100%);
   min-height: 100vh;
   padding: 6px 0 20px;
@@ -30,16 +31,15 @@ body {
   width: min(92%, 960px);
   margin: 0;
   padding: 12px clamp(16px, 3vw, 28px) 24px;
-  background: rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid var(--loreal-border);
   border-radius: 24px;
-  box-shadow: 0 10px 30px rgba(17, 17, 17, 0.08);
+  box-shadow: 0 14px 36px rgba(17, 17, 17, 0.14);
 }
 
 /* header */
 .site-header {
   text-align: center;
-  
 }
 
 .site-logo {
@@ -52,7 +52,7 @@ body {
 .site-title {
   font-size: clamp(1.2rem, 2.3vw, 1.5rem);
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 14px;
   color: var(--loreal-pink-dark);
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -60,7 +60,7 @@ body {
 
 /* chat window */
 .chatbox {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
 }
 
 .chat-window {
@@ -82,23 +82,46 @@ body {
 .msg {
   margin-bottom: 12px;
   line-height: 1.6;
-  padding: 10px 12px;
-  border-radius: 14px;
-  max-width: 88%;
+  padding: 12px 14px;
+  border-radius: 18px 18px 18px 6px;
+  width: fit-content;
+  max-width: min(88%, 520px);
   word-wrap: break-word;
+  box-shadow: 0 4px 10px rgba(17, 17, 17, 0.06);
+}
+
+.msg-content p,
+.msg-content ul {
+  margin: 0;
+}
+
+.msg-content p + p,
+.msg-content ul + p,
+.msg-content p + ul {
+  margin-top: 8px;
+}
+
+.msg-content ul {
+  padding-left: 18px;
+}
+
+.msg-content li + li {
+  margin-top: 4px;
 }
 
 .msg.user {
   color: var(--loreal-black);
-  background: #fce8f0;
-  border: 1px solid #f5c9d8;
+  background: linear-gradient(135deg, #fce8f0 0%, #f9dce8 100%);
+  border: 1px solid #f3c5d8;
   margin-left: auto;
+  border-radius: 18px 18px 6px 18px;
 }
 
 .msg.ai {
   color: var(--loreal-text);
   background: #ffffff;
   border: 1px solid var(--loreal-border);
+  border-radius: 18px 18px 18px 6px;
 }
 
 /* input row */
@@ -176,7 +199,9 @@ body {
 
 /* footer */
 .site-footer {
-  margin: 50px 0 20px;
+  width: min(92%, 960px);
+  margin: 18px 0 6px;
+  padding: 0 8px 4px;
   text-align: center;
   font-size: 14px;
   color: var(--loreal-text);
