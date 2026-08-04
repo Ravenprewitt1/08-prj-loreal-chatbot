@@ -4,7 +4,7 @@ const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
 
 const SYSTEM_PROMPT = `You are a friendly L'Oréal beauty assistant. Answer only questions about L'Oréal products, skincare, makeup, haircare, fragrances, beauty routines, and related recommendations. If the user asks about something unrelated, politely refuse to answer and gently redirect them to beauty, skincare, makeup, haircare, fragrance, or L'Oréal product guidance. Keep your response clear, concise, and helpful.`;
-const workerUrl = "https://loreal-chatbot.your-subdomain.workers.dev/";
+const workerUrl = "https://loralchatbot-worker.raven-prewitt1.workers.dev";
 const conversation = [];
 
 function addMessage(text, role) {
@@ -29,6 +29,37 @@ function updateLastMessage(text) {
 
 showGreeting();
 
+// This section keeps your added worker logic, but uses the existing chat UI.
+async function sendToWorker(message) {
+  conversation.push({ role: "user", content: message });
+
+  const response = await fetch(workerUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        ...conversation.map((entry) => ({
+          role: entry.role,
+          content: entry.content,
+        })),
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("The chatbot could not respond right now.");
+  }
+
+  const data = await response.json();
+  const reply =
+    data.choices?.[0]?.message?.content ||
+    "I’m sorry, I could not generate a reply.";
+
+  conversation.push({ role: "assistant", content: reply });
+  updateLastMessage(reply);
+}
+
 /* Handle form submit */
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -43,33 +74,7 @@ chatForm.addEventListener("submit", async (e) => {
   addMessage("Thinking...", "ai");
 
   try {
-    conversation.push({ role: "user", content: message });
-
-    const response = await fetch(workerUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          ...conversation.map((entry) => ({
-            role: entry.role,
-            content: entry.content,
-          })),
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("The chatbot could not respond right now.");
-    }
-
-    const data = await response.json();
-    const reply =
-      data.choices?.[0]?.message?.content ||
-      "I’m sorry, I could not generate a reply.";
-
-    conversation.push({ role: "assistant", content: reply });
-    updateLastMessage(reply);
+    await sendToWorker(message);
   } catch (error) {
     updateLastMessage(error.message || "Something went wrong.");
   }
